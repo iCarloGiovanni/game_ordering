@@ -1,0 +1,20 @@
+{
+  "extends": "airbnb-base",
+  "env": {
+    "browser": true,
+    "es6": true,
+    "worker": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 10,
+    "sourceType": "module"
+  },
+  "rules": {
+    "import/prefer-default-export": "off",
+    "no-plusplus":"off",
+    "quotes":"off",
+    "no-unused-vars":"off",
+    "import/extensions": "off",
+    "no-use-before-define": "off"
+  }
+}
