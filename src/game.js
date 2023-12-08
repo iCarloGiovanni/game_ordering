@@ -8,7 +8,7 @@ let selectedIndex = 0;
 const gameProperties = {
   extraTime: 0,
   subTime: 0,
-  gainedPints: 0,
+  gainedPoints: 0,
   lostPoints: 0,
   pointsForFinishing: 0,
 };
@@ -16,6 +16,7 @@ const gameProperties = {
 const backgroundMusic = document.getElementById('backgroundMusic');
 const correctSound = document.getElementById('correctSound');
 const wrongSound = document.getElementById('wrongSound');
+const audioContext = new AudioContext();
 
 function setDifficulty() {
   const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
@@ -24,21 +25,21 @@ function setDifficulty() {
     case "easy":
       gameProperties.extraTime = 10;
       gameProperties.subTime = -1;
-      gameProperties.gainedPints = 100;
+      gameProperties.gainedPoints = 100;
       gameProperties.lostPoints = -50;
       gameProperties.pointsForFinishing = 500;
       break;
     case "medium":
       gameProperties.extraTime = 8;
       gameProperties.subTime = -2;
-      gameProperties.gainedPints = 150;
+      gameProperties.gainedPoints = 150;
       gameProperties.lostPoints = -75;
       gameProperties.pointsForFinishing = 600;
       break;
     case "hard":
       gameProperties.extraTime = 6;
       gameProperties.subTime = -3;
-      gameProperties.gainedPints = 200;
+      gameProperties.gainedPoints = 200;
       gameProperties.lostPoints = -100;
       gameProperties.pointsForFinishing = 700;
       break;
@@ -58,6 +59,7 @@ function shuffleArray(array) {
 
 function handleItemClick(event) {
   handleInteraction(event);
+  audioContext.resume();
 }
 
 function handleInteraction(input) {

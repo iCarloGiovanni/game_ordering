@@ -320,6 +320,7 @@ input {
 /* game over screen */
 
 #gameOver-screen {
+  background-attachment: fixed;
   flex-direction: column;
   display: flex;
   align-items: center;
