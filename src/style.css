@@ -151,15 +151,22 @@ progress {
 
 /* Welcome page */
 #welcome {
-  background-image: linear-gradient(
-    rgb(120, 98, 232),
-    rgb(246, 197, 255)
-  );
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-attachment: fixed;
   padding-bottom: 4rem;
+  width: 100%;
+  height: 100vh;
+  background-size: 200% 200%;
+  background-image: linear-gradient(
+    -45deg,
+    rgb(92, 64, 234) 0%,
+    rgb(120, 98, 232) 25%,
+    rgb(246, 197, 255) 51%,
+    rgb(241, 127, 140) 100%
+  );
+  -webkit-animation: AnimateBG 20s ease infinite;
+  animation: AnimateBG 20s ease infinite;
 }
 
 .title {
@@ -272,7 +279,7 @@ input {
   height: 100px;
   width: 100px;
   color: azure;
-  background-color: rgb(60, 136, 139);
+  background-color: rgb(77, 183, 236);
   font-size: 50px;
   text-align: center;
   vertical-align: middle;
@@ -281,7 +288,7 @@ input {
 }
 
 .item:hover {
-  background-color: rgb(70, 187, 191);
+  background-color: rgb(50, 137, 200);
 }
 
 .completed {
@@ -307,13 +314,22 @@ input {
 /* game over screen */
 
 #gameOver-screen {
-  background-image: linear-gradient(rgb(212, 71, 20), rgb(238, 136, 115));
-  display: flex;
   flex-direction: column;
+  display: flex;
   align-items: center;
-  width: auto;
-  background-attachment: fixed;
   padding-bottom: 4rem;
+  width: 100%;
+  height: 100vh;
+  background-size: 200% 200%;
+  background-image: linear-gradient(
+    -45deg,
+    rgb(210, 54, 54) 0%,
+    rgb(221, 89, 41) 25%,
+    rgb(238, 152, 115) 51%,
+    rgb(238, 176, 115) 100%
+  );
+  -webkit-animation: AnimateBG 20s ease infinite;
+  animation: AnimateBG 20s ease infinite;
 }
 
 #leaderboardContainer {
@@ -356,23 +372,24 @@ td {
 }
 
 button {
-  width: 12rem;
+  width: 14rem;
   color: white;
-  background-color: rgba(34, 193, 195, 1);
+  background-color: rgb(77, 183, 236);
   border: none;
   border-radius: 2rem;
   font-size: 2rem;
   height: 4rem;
+  padding: 1rem;
 }
 
 button:hover {
-  background-color: rgb(132, 220, 222);
+  background-color: rgb(50, 137, 200);
 }
 
 #btn-playAgain {
   width: 16rem;
   color: white;
-  background-color: rgb(215, 59, 44);
+  background-color: rgb(219, 84, 43);
   border: none;
   border-radius: 2rem;
   font-size: 2rem;
@@ -380,7 +397,7 @@ button:hover {
 }
 
 #btn-playAgain:hover {
-  background-color: rgb(251, 89, 74);
+  background-color: rgb(228, 121, 88);
 }
 
 @keyframes wrong {
