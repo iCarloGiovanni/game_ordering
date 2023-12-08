@@ -292,11 +292,11 @@ input {
 }
 
 .completed {
-  background-color: #29a0d4;
+  background-color: #0e8ec5;
 }
 
 .completed:hover {
-  background-color: #29a0d4;
+  background-color: #0e8ec5;
 }
 .wrong {
   animation-name: wrong;

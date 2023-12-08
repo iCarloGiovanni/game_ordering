@@ -52,23 +52,29 @@ function shuffleArray(array) {
   return shuffled;
 }
 
-function handleItemClick(item) {
-  const clickedNumber = parseInt(item.textContent, 10);
+function handleItemClick(event) {
+  handleInteraction(event);
+}
+
+function handleInteraction(input) {
+  const targetItem = input instanceof Event ? input.target : input;
+
+  const clickedNumber = parseInt(targetItem.textContent, 10);
   if (clickedNumber === currentNumber) {
-    item.classList.add("completed");
+    targetItem.classList.add("completed");
     currentNumber++;
-    updateScore(gameProperties.gainedPints);
+    updateScore(gameProperties.gainedPoints);
     if (currentNumber > totalNumbers) {
       updateScore(gameProperties.pointsForFinishing);
       addTime(gameProperties.extraTime);
       repaintGameContainer();
     }
   } else {
-    item.classList.add("wrong");
+    targetItem.classList.add("wrong");
     updateScore(gameProperties.lostPoints);
     addTime(gameProperties.subTime);
     setTimeout(() => {
-      item.classList.remove("wrong");
+      targetItem.classList.remove("wrong");
     }, 300);
   }
 }
@@ -117,7 +123,7 @@ function handleKeyPress(event) {
     selectedIndex = Math.min(items.length - 1, selectedIndex + 1);
   } else if (event.key === "Enter") {
     const selectedItem = items[selectedIndex];
-    handleItemClick(selectedItem);
+    handleInteraction(selectedItem);
   }
 
   highlightSelected();
@@ -126,6 +132,6 @@ function handleKeyPress(event) {
 window.addEventListener("load", () => {
   setDifficulty();
   repaintGameContainer();
-  document.addEventListener('keydown', handleKeyPress);
+  document.addEventListener("keydown", handleKeyPress);
   highlightSelected();
 });
