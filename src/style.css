@@ -304,6 +304,12 @@ input {
   animation-iteration-count: 1;
 }
 
+.item.selected {
+  border-style: solid;
+  border-color: aquamarine;
+  border-width: 4px;
+}
+
 #score-end {
   display: flex;
   justify-content: space-around;

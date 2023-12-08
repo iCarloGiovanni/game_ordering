@@ -1,7 +1,9 @@
-import { updateScore, addTime } from './timer.js';
+import { updateScore, addTime } from "./timer.js";
 
 let totalNumbers = 4;
 let currentNumber = 1;
+let items = document.querySelectorAll(".item");
+let selectedIndex = 0;
 
 const gameProperties = {
   extraTime: 0,
@@ -12,24 +14,24 @@ const gameProperties = {
 };
 
 function setDifficulty() {
-  const selectedDifficulty = sessionStorage.getItem('DIFFICULTY');
+  const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
 
   switch (selectedDifficulty) {
-    case 'easy':
+    case "easy":
       gameProperties.extraTime = 10;
       gameProperties.subTime = -1;
       gameProperties.gainedPints = 100;
       gameProperties.lostPoints = -50;
       gameProperties.pointsForFinishing = 500;
       break;
-    case 'medium':
+    case "medium":
       gameProperties.extraTime = 8;
       gameProperties.subTime = -2;
       gameProperties.gainedPints = 150;
       gameProperties.lostPoints = -75;
       gameProperties.pointsForFinishing = 600;
       break;
-    case 'hard':
+    case "hard":
       gameProperties.extraTime = 6;
       gameProperties.subTime = -3;
       gameProperties.gainedPints = 200;
@@ -37,7 +39,7 @@ function setDifficulty() {
       gameProperties.pointsForFinishing = 700;
       break;
     default:
-      throw new Error('Unknown difficulty');
+      throw new Error("Unknown difficulty");
   }
 }
 
@@ -50,10 +52,10 @@ function shuffleArray(array) {
   return shuffled;
 }
 
-function handleItemClick(event) {
-  const clickedNumber = parseInt(event.target.textContent, 10);
+function handleItemClick(item) {
+  const clickedNumber = parseInt(item.textContent, 10);
   if (clickedNumber === currentNumber) {
-    event.target.classList.add("completed");
+    item.classList.add("completed");
     currentNumber++;
     updateScore(gameProperties.gainedPints);
     if (currentNumber > totalNumbers) {
@@ -62,11 +64,11 @@ function handleItemClick(event) {
       repaintGameContainer();
     }
   } else {
-    event.target.classList.add("wrong");
+    item.classList.add("wrong");
     updateScore(gameProperties.lostPoints);
     addTime(gameProperties.subTime);
     setTimeout(() => {
-      event.target.classList.remove("wrong");
+      item.classList.remove("wrong");
     }, 300);
   }
 }
@@ -94,9 +96,36 @@ function repaintGameContainer() {
   currentNumber = 1;
   document.getElementById("itemContainer").innerHTML = "";
   generateitems(totalNumbers);
+  items = document.querySelectorAll(".item");
+  selectedIndex = -1;
+}
+
+function highlightSelected() {
+  items.forEach((item, index) => {
+    if (index === selectedIndex) {
+      item.classList.add("selected");
+    } else {
+      item.classList.remove("selected");
+    }
+  });
+}
+
+function handleKeyPress(event) {
+  if (event.key === "ArrowLeft") {
+    selectedIndex = Math.max(0, selectedIndex - 1);
+  } else if (event.key === "ArrowRight") {
+    selectedIndex = Math.min(items.length - 1, selectedIndex + 1);
+  } else if (event.key === "Enter") {
+    const selectedItem = items[selectedIndex];
+    handleItemClick(selectedItem);
+  }
+
+  highlightSelected();
 }
 
 window.addEventListener("load", () => {
   setDifficulty();
   repaintGameContainer();
+  document.addEventListener('keydown', handleKeyPress);
+  highlightSelected();
 });
