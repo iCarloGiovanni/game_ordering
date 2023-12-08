@@ -3,13 +3,15 @@
 */
 
 html {
-  line-height: 1.2; 
-  -webkit-text-size-adjust: 100%; 
+  line-height: 1.2;
+  -webkit-text-size-adjust: 100%;
   height: 100%;
 }
 
-html, * {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Helvetica, sans-serif;
+html,
+* {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Ubuntu,
+    "Helvetica Neue", Helvetica, sans-serif;
 }
 
 body {
@@ -32,22 +34,25 @@ h3 {
 }
 
 hr {
-  box-sizing: content-box; 
-  height: 0; 
-  overflow: visible; 
+  box-sizing: content-box;
+  height: 0;
+  overflow: visible;
 }
 
 pre {
-  font-family: monospace, monospace; 
-  font-size: 1em; 
+  font-family: monospace, monospace;
+  font-size: 1em;
 }
 
-b, strong {
+b,
+strong {
   font-weight: bolder;
 }
 
-code, kbd, samp {
-  font-family: monospace, monospace; 
+code,
+kbd,
+samp {
+  font-family: monospace, monospace;
   font-size: 1em;
 }
 
@@ -55,7 +60,8 @@ small {
   font-size: 80%;
 }
 
-sub, sup {
+sub,
+sup {
   font-size: 75%;
   line-height: 0;
   position: relative;
@@ -70,27 +76,41 @@ sup {
   top: -0.5em;
 }
 
-button, input, optgroup, select, textarea {
-  font-family: inherit; 
-  font-size: 100%; 
-  line-height: 1.15; 
-  margin: 0; 
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+  line-height: 1.15;
+  margin: 0;
 }
 
-button, select { 
+button,
+select {
   text-transform: none;
 }
 
-button, [type="button"], [type="reset"], [type="submit"] {
+button,
+[type="button"],
+[type="reset"],
+[type="submit"] {
   -webkit-appearance: button;
 }
 
-button::-moz-focus-inner, [type="button"]::-moz-focus-inner, [type="reset"]::-moz-focus-inner, [type="submit"]::-moz-focus-inner {
+button::-moz-focus-inner,
+[type="button"]::-moz-focus-inner,
+[type="reset"]::-moz-focus-inner,
+[type="submit"]::-moz-focus-inner {
   border-style: none;
   padding: 0;
 }
 
-button:-moz-focusring, [type="button"]:-moz-focusring, [type="reset"]:-moz-focusring, [type="submit"]:-moz-focusring {
+button:-moz-focusring,
+[type="button"]:-moz-focusring,
+[type="reset"]:-moz-focusring,
+[type="submit"]:-moz-focusring {
   outline: 1px dotted ButtonText;
 }
 
@@ -106,13 +126,14 @@ progress {
   vertical-align: baseline;
 }
 
-[type="number"]::-webkit-inner-spin-button, [type="number"]::-webkit-outer-spin-button {
+[type="number"]::-webkit-inner-spin-button,
+[type="number"]::-webkit-outer-spin-button {
   height: auto;
 }
 
 [type="search"] {
   -webkit-appearance: textfield;
-  outline-offset: -2px; 
+  outline-offset: -2px;
 }
 
 [type="search"]::-webkit-search-decoration {
@@ -120,8 +141,8 @@ progress {
 }
 
 ::-webkit-file-upload-button {
-  -webkit-appearance: button; 
-  font: inherit; 
+  -webkit-appearance: button;
+  font: inherit;
 }
 
 [hidden] {
@@ -130,7 +151,10 @@ progress {
 
 /* Welcome page */
 #welcome {
-  background-image: linear-gradient( rgba(34,193,195,1) , rgba(45,253,167,1));
+  background-image: linear-gradient(
+    rgb(120, 98, 232),
+    rgb(246, 197, 255)
+  );
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -139,10 +163,10 @@ progress {
 }
 
 .title {
- font-size: 100px;
- color: white;
- text-align: center;   
- margin-top: 6rem;
+  font-size: 100px;
+  color: white;
+  text-align: center;
+  margin-top: 6rem;
 }
 
 #nameForm {
@@ -168,7 +192,7 @@ input {
   color: white;
 }
 
-#difficultyOptions{
+#difficultyOptions {
   display: flex;
   align-items: center;
   gap: 2rem;
@@ -176,12 +200,30 @@ input {
   margin-bottom: 4rem;
 }
 
+#purple-btn{
+  background-color: #a285df;
+}
+
+#purple-btn:hover{
+  background-color: #855ed9;
+}
+
 /* main game styles */
 
-#game-screen{
-  background-image: linear-gradient( rgb(24, 182, 197) , rgb(188, 225, 194));
-  background-attachment: fixed;
+#game-screen {
   padding-bottom: 4rem;
+  width: 100%;
+  height: 100vh;
+  background-size: 200% 200%;
+  background-image: linear-gradient(
+    -45deg,
+    rgb(156, 255, 143) 0%,
+    rgb(32, 204, 112) 25%,
+    rgb(0, 238, 226) 51%,
+    #217eff 100%
+  );
+  -webkit-animation: AnimateBG 20s ease infinite;
+  animation: AnimateBG 20s ease infinite;
 }
 
 #mainGame {
@@ -198,7 +240,6 @@ input {
   align-items: center;
   gap: 2rem;
   justify-content: center;
-  
 }
 
 #timer-bar {
@@ -247,7 +288,7 @@ input {
   background-color: #29a0d4;
 }
 
-.completed:hover{
+.completed:hover {
   background-color: #29a0d4;
 }
 .wrong {
@@ -256,10 +297,17 @@ input {
   animation-iteration-count: 1;
 }
 
+#score-end {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
 /* game over screen */
 
 #gameOver-screen {
-  background-image: linear-gradient( rgb(212, 71, 20) , rgb(238, 136, 115));
+  background-image: linear-gradient(rgb(212, 71, 20), rgb(238, 136, 115));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -268,28 +316,28 @@ input {
   padding-bottom: 4rem;
 }
 
-#leaderboardContainer{
+#leaderboardContainer {
   width: 80%;
   text-align: center;
 }
 
-table{
-  width:100%;
+table {
+  width: 100%;
   table-layout: fixed;
   margin-bottom: 4rem;
 }
-#tbl-header{
-  background-color: rgba(255,255,255,0.3);
- }
- 
-#leaderboard{
-  height:300px;
-  overflow-x:auto;
-  margin-top: 0px;
-  border: 1px solid rgba(255,255,255,0.3);
+#tbl-header {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
-th{
+#leaderboard {
+  height: 300px;
+  overflow-x: auto;
+  margin-top: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+th {
   padding: 20px 15px;
   text-align: center;
   font-weight: 500;
@@ -297,28 +345,28 @@ th{
   color: #fff;
   text-transform: uppercase;
 }
-td{
+td {
   padding: 15px;
   text-align: center;
-  vertical-align:middle;
+  vertical-align: middle;
   font-weight: 300;
   font-size: 1rem;
   color: #fff;
-  border-bottom: solid 1px rgba(255,255,255,0.1);
+  border-bottom: solid 1px rgba(255, 255, 255, 0.1);
 }
 
 button {
   width: 12rem;
   color: white;
-  background-color: rgba(34,193,195,1);
+  background-color: rgba(34, 193, 195, 1);
   border: none;
   border-radius: 2rem;
   font-size: 2rem;
   height: 4rem;
 }
 
-button:hover{
-    background-color: rgb(132, 220, 222);
+button:hover {
+  background-color: rgb(132, 220, 222);
 }
 
 #btn-playAgain {
@@ -331,14 +379,39 @@ button:hover{
   height: 4rem;
 }
 
-#btn-playAgain:hover{
+#btn-playAgain:hover {
   background-color: rgb(251, 89, 74);
 }
 
-
-
 @keyframes wrong {
-  from {background-color: rgb(60, 136, 139);}
-  to {background-color: rgb(255, 102, 168);}
-  
+  from {
+    background-color: rgb(60, 136, 139);
+  }
+  to {
+    background-color: rgb(255, 102, 168);
+  }
+}
+
+@-webkit-keyframes AnimateBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes AnimateBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }

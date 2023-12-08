@@ -3,6 +3,11 @@ let maxTime = 0;
 let timeInSeconds = 0;
 let score = 0;
 
+function toLeaderboard() {
+  sessionStorage.setItem('SCORE', score);
+  window.location.href = "leaderBoard.html";
+}
+
 function setMaxTime() {
   const selectedDifficulty = sessionStorage.getItem('DIFFICULTY');
 
@@ -55,8 +60,7 @@ function startTimer() {
       updateTimer();
     } else {
       clearInterval(timer);
-      sessionStorage.setItem('SCORE', score);
-      window.location.href = "leaderBoard.html";
+      toLeaderboard();
     }
   }, 1000);
 }
@@ -65,6 +69,8 @@ window.addEventListener("load", () => {
   const user = sessionStorage.getItem("USER");
   document.getElementById("displayName").innerHTML = ` ${user}`;
   document.getElementById("displayScore").innerHTML = ` ${score}`;
+  const endGameBtn = document.getElementById("btn-endGame");
+  endGameBtn.addEventListener("click", toLeaderboard);
 
   startTimer();
 });

@@ -5,27 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Play - Order Numbers</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css" />
   </head>
   <body id="game-screen">
     <div id="mainGame">
       <header id="gameHeader">
-          <h1 class="title">Welcome, <span id="displayName"></span>! </h1>
-          <h2 class="subtitle">Click the numbers in the correct order</h2>
+        <h1 class="title">Welcome, <span id="displayName"></span>!</h1>
+        <h2 class="subtitle">Click the numbers in the correct order</h2>
+        <div id="score-end">
           <h3>Score: <span id="displayScore"></span></h3>
+          <button id="btn-endGame">End Game</button>
+        </div>
       </header>
       <div id="timerSection">
-          <div id="timer-bar">
-              <div id="progress-bar"></div>
-            </div>
-            <p id="timer">00:00</p>
+        <div id="timer-bar">
+          <div id="progress-bar"></div>
+        </div>
+        <p id="timer">00:00</p>
       </div>
       <div id="gameSection">
-          <div id="itemContainer">
-          </div>
+        <div id="itemContainer"></div>
       </div>
     </div>
-    <script type="module" src="game.js" defer></script>
     <script type="module" src="timer.js" defer></script>
+    <script type="module" src="game.js" defer></script>
   </body>
 </html>
