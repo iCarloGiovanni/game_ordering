@@ -13,6 +13,10 @@ const gameProperties = {
   pointsForFinishing: 0,
 };
 
+const backgroundMusic = document.getElementById('backgroundMusic');
+const correctSound = document.getElementById('correctSound');
+const wrongSound = document.getElementById('wrongSound');
+
 function setDifficulty() {
   const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
 
@@ -61,6 +65,7 @@ function handleInteraction(input) {
 
   const clickedNumber = parseInt(targetItem.textContent, 10);
   if (clickedNumber === currentNumber) {
+    correctSound.play();
     targetItem.classList.add("completed");
     currentNumber++;
     updateScore(gameProperties.gainedPoints);
@@ -70,6 +75,7 @@ function handleInteraction(input) {
       repaintGameContainer();
     }
   } else {
+    wrongSound.play();
     targetItem.classList.add("wrong");
     updateScore(gameProperties.lostPoints);
     addTime(gameProperties.subTime);
@@ -134,4 +140,5 @@ window.addEventListener("load", () => {
   repaintGameContainer();
   document.addEventListener("keydown", handleKeyPress);
   highlightSelected();
+  backgroundMusic.play();
 });
