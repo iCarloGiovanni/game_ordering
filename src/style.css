@@ -151,6 +151,7 @@ progress {
 
 /* Welcome page */
 #welcome {
+  background-attachment: fixed;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -218,6 +219,7 @@ input {
 /* main game styles */
 
 #game-screen {
+  background-attachment: fixed;
   padding-bottom: 4rem;
   width: 100%;
   height: 100vh;
