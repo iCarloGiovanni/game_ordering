@@ -4,8 +4,14 @@ let totalNumbers = 4;
 let currentNumber = 1;
 let items = document.querySelectorAll(".item");
 let selectedIndex = 0;
-let startPoint = 0;
 let numberOfSelectedItems = 0;
+let itemsArray = [];
+// // variables for hard mode
+// let hardMode = false;
+// let numA = 0;
+// let numB = 0;
+// let numAB = 0;
+
 const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
 
 const gameProperties = {
@@ -43,10 +49,35 @@ function setDifficulty() {
       gameProperties.gainedPoints = 200;
       gameProperties.lostPoints = -100;
       gameProperties.pointsForFinishing = 700;
+      // setHardMode();
       break;
     default:
       throw new Error("Unknown difficulty");
   }
+}
+
+// function setHardMode() {
+//   hardMode = true;
+//   const instructions = document.getElementById("instructions");
+//   const operation = document.getElementById("operation");
+//   instructions.textContent = 'Click the number that completes the following operation';
+//   operation.textContent = `____ + ${numB} = ${numAB}`;
+// }
+
+function generateRandomArray(n) {
+  const randomArray = [];
+
+  while (randomArray.length < n) {
+    const randomNumber = Math.floor(Math.random() * 99) + 1;
+
+    if (randomArray.indexOf(randomNumber) === -1) {
+      randomArray.push(randomNumber);
+    }
+  }
+
+  randomArray.sort((a, b) => a - b);
+
+  return randomArray;
 }
 
 function shuffleArray(array) {
@@ -70,8 +101,8 @@ function handleInteraction(input) {
   if (clickedNumber === currentNumber) {
     correctSound.play();
     targetItem.classList.add("completed");
-    currentNumber++;
     numberOfSelectedItems++;
+    currentNumber = itemsArray[numberOfSelectedItems];
     updateScore(gameProperties.gainedPoints);
     if (numberOfSelectedItems === totalNumbers) {
       updateScore(gameProperties.pointsForFinishing);
@@ -92,7 +123,15 @@ function handleInteraction(input) {
 function generateitems(numberOfItems) {
   const container = document.getElementById("itemContainer");
 
-  const itemsArray = Array.from(Array(numberOfItems).keys()).map((i) => i + startPoint + 1);
+  switch (selectedDifficulty) {
+    case "easy":
+      itemsArray = Array.from(Array(numberOfItems).keys()).map((i) => i + 1);
+      break;
+    case "medium":
+      itemsArray = generateRandomArray(numberOfItems);
+      break;
+    default: break;
+  }
   const definitiveArray = shuffleArray(itemsArray);
 
   for (let i = 1; i <= numberOfItems; i++) {
@@ -108,16 +147,13 @@ function generateitems(numberOfItems) {
 }
 
 function repaintGameContainer() {
-  if (selectedDifficulty === "medium") {
-    startPoint = Math.floor(Math.random() * 85);
-  }
   totalNumbers++;
   numberOfSelectedItems = 0;
-  currentNumber = startPoint + 1;
   document.getElementById("itemContainer").innerHTML = "";
   generateitems(totalNumbers);
   items = document.querySelectorAll(".item");
   selectedIndex = -1;
+  [currentNumber] = itemsArray;
 }
 
 function highlightSelected() {
