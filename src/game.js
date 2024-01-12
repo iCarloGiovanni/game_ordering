@@ -4,6 +4,9 @@ let totalNumbers = 4;
 let currentNumber = 1;
 let items = document.querySelectorAll(".item");
 let selectedIndex = 0;
+let startPoint = 0;
+let numberOfSelectedItems = 0;
+const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
 
 const gameProperties = {
   extraTime: 0,
@@ -19,8 +22,6 @@ const wrongSound = document.getElementById('wrongSound');
 const audioContext = new AudioContext();
 
 function setDifficulty() {
-  const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
-
   switch (selectedDifficulty) {
     case "easy":
       gameProperties.extraTime = 10;
@@ -70,8 +71,9 @@ function handleInteraction(input) {
     correctSound.play();
     targetItem.classList.add("completed");
     currentNumber++;
+    numberOfSelectedItems++;
     updateScore(gameProperties.gainedPoints);
-    if (currentNumber > totalNumbers) {
+    if (numberOfSelectedItems === totalNumbers) {
       updateScore(gameProperties.pointsForFinishing);
       addTime(gameProperties.extraTime);
       repaintGameContainer();
@@ -90,7 +92,7 @@ function handleInteraction(input) {
 function generateitems(numberOfItems) {
   const container = document.getElementById("itemContainer");
 
-  const itemsArray = Array.from(Array(numberOfItems).keys()).map((i) => i + 1);
+  const itemsArray = Array.from(Array(numberOfItems).keys()).map((i) => i + startPoint + 1);
   const definitiveArray = shuffleArray(itemsArray);
 
   for (let i = 1; i <= numberOfItems; i++) {
@@ -106,8 +108,12 @@ function generateitems(numberOfItems) {
 }
 
 function repaintGameContainer() {
+  if (selectedDifficulty === "medium") {
+    startPoint = Math.floor(Math.random() * 85);
+  }
   totalNumbers++;
-  currentNumber = 1;
+  numberOfSelectedItems = 0;
+  currentNumber = startPoint + 1;
   document.getElementById("itemContainer").innerHTML = "";
   generateitems(totalNumbers);
   items = document.querySelectorAll(".item");

@@ -117,19 +117,222 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"main.js":[function(require,module,exports) {
-/* eslint-disable no-unused-vars */
-var btnEl = document.getElementById('purple-btn');
-function submitForm(event) {
-  event.preventDefault();
-  var name = document.getElementById('name').value;
-  var difficulty = document.querySelector('input[name="difficulty"]:checked');
-  sessionStorage.setItem('USER', name);
-  sessionStorage.setItem('DIFFICULTY', difficulty.value);
-  window.location.href = 'game.html';
+})({"timer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addTime = addTime;
+exports.updateScore = updateScore;
+var timer;
+var maxTime = 0;
+var timeInSeconds = 0;
+var score = 0;
+function toLeaderboard() {
+  sessionStorage.setItem('SCORE', score);
+  window.location.href = "leaderBoard.html";
 }
-btnEl.addEventListener('click', submitForm);
-},{}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+function setMaxTime() {
+  var selectedDifficulty = sessionStorage.getItem('DIFFICULTY');
+  switch (selectedDifficulty) {
+    case 'easy':
+      maxTime = 30;
+      break;
+    case 'medium':
+      maxTime = 20;
+      break;
+    case 'hard':
+      maxTime = 15;
+      break;
+    default:
+      throw new Error('Unknown difficulty');
+  }
+  timeInSeconds = maxTime;
+}
+function updateScore(points) {
+  score += points;
+  document.getElementById("displayScore").innerHTML = " ".concat(score);
+}
+function updateTimer() {
+  var minutes = Math.floor(timeInSeconds / 60);
+  var seconds = timeInSeconds % 60;
+  var displayTime = "".concat(String(minutes).padStart(2, "0"), ":").concat(String(seconds).padStart(2, "0"));
+  document.getElementById("timer").innerText = displayTime;
+  var progressBar = document.getElementById("progress-bar");
+  var percentage = timeInSeconds / maxTime * 100;
+  progressBar.style.width = "".concat(percentage, "%");
+}
+function addTime(time) {
+  timeInSeconds = Math.min(timeInSeconds + time, maxTime);
+  updateTimer();
+}
+function startTimer() {
+  setMaxTime();
+  timer = setInterval(function () {
+    if (timeInSeconds > 0) {
+      timeInSeconds--;
+      updateTimer();
+    } else {
+      clearInterval(timer);
+      toLeaderboard();
+    }
+  }, 1000);
+}
+window.addEventListener("load", function () {
+  var user = sessionStorage.getItem("USER");
+  document.getElementById("displayName").innerHTML = " ".concat(user);
+  document.getElementById("displayScore").innerHTML = " ".concat(score);
+  var endGameBtn = document.getElementById("btn-endGame");
+  endGameBtn.addEventListener("click", toLeaderboard);
+  startTimer();
+});
+},{}],"game.js":[function(require,module,exports) {
+"use strict";
+
+var _timer = require("./timer.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) arr2[i] = arr[i]; return arr2; }
+var totalNumbers = 4;
+var currentNumber = 1;
+var items = document.querySelectorAll(".item");
+var selectedIndex = 0;
+var startPoint = 0;
+var selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
+var gameProperties = {
+  extraTime: 0,
+  subTime: 0,
+  gainedPoints: 0,
+  lostPoints: 0,
+  pointsForFinishing: 0
+};
+var backgroundMusic = document.getElementById('backgroundMusic');
+var correctSound = document.getElementById('correctSound');
+var wrongSound = document.getElementById('wrongSound');
+var audioContext = new AudioContext();
+function setDifficulty() {
+  switch (selectedDifficulty) {
+    case "easy":
+      gameProperties.extraTime = 10;
+      gameProperties.subTime = -1;
+      gameProperties.gainedPoints = 100;
+      gameProperties.lostPoints = -50;
+      gameProperties.pointsForFinishing = 500;
+      break;
+    case "medium":
+      gameProperties.extraTime = 8;
+      gameProperties.subTime = -2;
+      gameProperties.gainedPoints = 150;
+      gameProperties.lostPoints = -75;
+      gameProperties.pointsForFinishing = 600;
+      break;
+    case "hard":
+      gameProperties.extraTime = 6;
+      gameProperties.subTime = -3;
+      gameProperties.gainedPoints = 200;
+      gameProperties.lostPoints = -100;
+      gameProperties.pointsForFinishing = 700;
+      break;
+    default:
+      throw new Error("Unknown difficulty");
+  }
+}
+function shuffleArray(array) {
+  var shuffled = _toConsumableArray(array);
+  for (var i = shuffled.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var _ref = [shuffled[j], shuffled[i]];
+    shuffled[i] = _ref[0];
+    shuffled[j] = _ref[1];
+  }
+  return shuffled;
+}
+function handleItemClick(event) {
+  handleInteraction(event);
+  audioContext.resume();
+}
+function handleInteraction(input) {
+  var targetItem = input instanceof Event ? input.target : input;
+  var clickedNumber = parseInt(targetItem.textContent, 10);
+  if (clickedNumber === currentNumber) {
+    correctSound.play();
+    targetItem.classList.add("completed");
+    currentNumber++;
+    (0, _timer.updateScore)(gameProperties.gainedPoints);
+    if (currentNumber > totalNumbers) {
+      (0, _timer.updateScore)(gameProperties.pointsForFinishing);
+      (0, _timer.addTime)(gameProperties.extraTime);
+      repaintGameContainer();
+    }
+  } else {
+    wrongSound.play();
+    targetItem.classList.add("wrong");
+    (0, _timer.updateScore)(gameProperties.lostPoints);
+    (0, _timer.addTime)(gameProperties.subTime);
+    setTimeout(function () {
+      targetItem.classList.remove("wrong");
+    }, 300);
+  }
+}
+function generateitems(numberOfItems) {
+  var container = document.getElementById("itemContainer");
+  if (selectedDifficulty === "medium") {
+    startPoint = Math.floor(Math.random() * 85) + 1;
+  }
+  var itemsArray = Array.from(Array(numberOfItems).keys()).map(function (i) {
+    return i + 1 + startPoint;
+  });
+  var definitiveArray = shuffleArray(itemsArray);
+  for (var i = 1; i <= numberOfItems; i++) {
+    var item = document.createElement("div");
+    item.textContent = definitiveArray[i - 1];
+    item.className = "item";
+    item.id = "item-".concat(definitiveArray[i - 1]);
+    item.addEventListener("click", handleItemClick);
+    container.appendChild(item);
+  }
+  document.body.appendChild(container);
+}
+function repaintGameContainer() {
+  totalNumbers++;
+  currentNumber = 1;
+  document.getElementById("itemContainer").innerHTML = "";
+  generateitems(totalNumbers);
+  items = document.querySelectorAll(".item");
+  selectedIndex = -1;
+}
+function highlightSelected() {
+  items.forEach(function (item, index) {
+    if (index === selectedIndex) {
+      item.classList.add("selected");
+    } else {
+      item.classList.remove("selected");
+    }
+  });
+}
+function handleKeyPress(event) {
+  if (event.key === "ArrowLeft") {
+    selectedIndex = Math.max(0, selectedIndex - 1);
+  } else if (event.key === "ArrowRight") {
+    selectedIndex = Math.min(items.length - 1, selectedIndex + 1);
+  } else if (event.key === "Enter") {
+    var selectedItem = items[selectedIndex];
+    handleInteraction(selectedItem);
+  }
+  highlightSelected();
+}
+window.addEventListener("load", function () {
+  setDifficulty();
+  repaintGameContainer();
+  document.addEventListener("keydown", handleKeyPress);
+  highlightSelected();
+  backgroundMusic.play();
+});
+},{"./timer.js":"timer.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -154,7 +357,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55715" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54762" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
@@ -298,5 +501,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
-//# sourceMappingURL=/main.1f19ae8e.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","game.js"], null)
+//# sourceMappingURL=/game.7bbe06d5.js.map

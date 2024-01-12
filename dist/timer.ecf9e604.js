@@ -117,18 +117,76 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"main.js":[function(require,module,exports) {
-/* eslint-disable no-unused-vars */
-var btnEl = document.getElementById('purple-btn');
-function submitForm(event) {
-  event.preventDefault();
-  var name = document.getElementById('name').value;
-  var difficulty = document.querySelector('input[name="difficulty"]:checked');
-  sessionStorage.setItem('USER', name);
-  sessionStorage.setItem('DIFFICULTY', difficulty.value);
-  window.location.href = 'game.html';
+})({"timer.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.addTime = addTime;
+exports.updateScore = updateScore;
+var timer;
+var maxTime = 0;
+var timeInSeconds = 0;
+var score = 0;
+function toLeaderboard() {
+  sessionStorage.setItem('SCORE', score);
+  window.location.href = "leaderBoard.html";
 }
-btnEl.addEventListener('click', submitForm);
+function setMaxTime() {
+  var selectedDifficulty = sessionStorage.getItem('DIFFICULTY');
+  switch (selectedDifficulty) {
+    case 'easy':
+      maxTime = 30;
+      break;
+    case 'medium':
+      maxTime = 20;
+      break;
+    case 'hard':
+      maxTime = 15;
+      break;
+    default:
+      throw new Error('Unknown difficulty');
+  }
+  timeInSeconds = maxTime;
+}
+function updateScore(points) {
+  score += points;
+  document.getElementById("displayScore").innerHTML = " ".concat(score);
+}
+function updateTimer() {
+  var minutes = Math.floor(timeInSeconds / 60);
+  var seconds = timeInSeconds % 60;
+  var displayTime = "".concat(String(minutes).padStart(2, "0"), ":").concat(String(seconds).padStart(2, "0"));
+  document.getElementById("timer").innerText = displayTime;
+  var progressBar = document.getElementById("progress-bar");
+  var percentage = timeInSeconds / maxTime * 100;
+  progressBar.style.width = "".concat(percentage, "%");
+}
+function addTime(time) {
+  timeInSeconds = Math.min(timeInSeconds + time, maxTime);
+  updateTimer();
+}
+function startTimer() {
+  setMaxTime();
+  timer = setInterval(function () {
+    if (timeInSeconds > 0) {
+      timeInSeconds--;
+      updateTimer();
+    } else {
+      clearInterval(timer);
+      toLeaderboard();
+    }
+  }, 1000);
+}
+window.addEventListener("load", function () {
+  var user = sessionStorage.getItem("USER");
+  document.getElementById("displayName").innerHTML = " ".concat(user);
+  document.getElementById("displayScore").innerHTML = " ".concat(score);
+  var endGameBtn = document.getElementById("btn-endGame");
+  endGameBtn.addEventListener("click", toLeaderboard);
+  startTimer();
+});
 },{}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -154,7 +212,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55715" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "54762" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
@@ -298,5 +356,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","main.js"], null)
-//# sourceMappingURL=/main.1f19ae8e.js.map
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","timer.js"], null)
+//# sourceMappingURL=/timer.ecf9e604.js.map

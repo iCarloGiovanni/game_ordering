@@ -1,6 +1,9 @@
 const score = sessionStorage.getItem("SCORE");
 const user = sessionStorage.getItem("USER");
+const btnEl = document.getElementById('btn-playAgain');
 const dummyScores = [{ newName: "Freddy", newScore: 10000 }, { newName: "Chica", newScore: 8200 }, { newName: "Bonnie", newScore: 7500 }, { newName: "Foxy", newScore: 5000 }, { newName: "Puppet", newScore: 3750 }];
+
+btnEl.addEventListener('click', playAgain);
 
 function playAgain() {
   window.location.href = "index.html";
