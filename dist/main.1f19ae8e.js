@@ -120,13 +120,19 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 })({"main.js":[function(require,module,exports) {
 /* eslint-disable no-unused-vars */
 var btnEl = document.getElementById('purple-btn');
+var inputEl = document.getElementById('name');
 function submitForm(event) {
   event.preventDefault();
-  var name = document.getElementById('name').value;
-  var difficulty = document.querySelector('input[name="difficulty"]:checked');
-  sessionStorage.setItem('USER', name);
-  sessionStorage.setItem('DIFFICULTY', difficulty.value);
-  window.location.href = 'game.html';
+  var name = inputEl.value;
+  if (name) {
+    var difficulty = document.querySelector('input[name="difficulty"]:checked');
+    sessionStorage.setItem('USER', name);
+    sessionStorage.setItem('DIFFICULTY', difficulty.value);
+    window.location.href = 'game.html';
+  } else {
+    inputEl.style.backgroundColor = "#f5dadf";
+    inputEl.placeholder = "Please enter a name";
+  }
 }
 btnEl.addEventListener('click', submitForm);
 },{}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -154,7 +160,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55715" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63824" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

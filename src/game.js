@@ -1,12 +1,16 @@
-import { updateScore, addTime } from "./timer.js";
+// timer variables
+let timer;
+let maxTime = 0;
+let timeInSeconds = 0;
+let score = 0;
 
+// game variables
 let totalNumbers = 4;
 let currentNumber = 1;
 let items = document.querySelectorAll(".item");
 let selectedIndex = 0;
 let numberOfSelectedItems = 0;
 let itemsArray = [];
-// // variables for hard mode
 let hardMode = false;
 let numA = 0;
 let numB = 0;
@@ -22,10 +26,13 @@ const gameProperties = {
   pointsForFinishing: 0,
 };
 
+// manage audio files
 const backgroundMusic = document.getElementById("backgroundMusic");
 const correctSound = document.getElementById("correctSound");
 const wrongSound = document.getElementById("wrongSound");
 const audioContext = new AudioContext();
+
+// set properties depending on difficulty
 
 function setDifficulty() {
   switch (selectedDifficulty) {
@@ -35,6 +42,7 @@ function setDifficulty() {
       gameProperties.gainedPoints = 100;
       gameProperties.lostPoints = -50;
       gameProperties.pointsForFinishing = 500;
+      maxTime = 30;
       break;
     case "medium":
       gameProperties.extraTime = 8;
@@ -42,6 +50,7 @@ function setDifficulty() {
       gameProperties.gainedPoints = 150;
       gameProperties.lostPoints = -75;
       gameProperties.pointsForFinishing = 600;
+      maxTime = 25;
       break;
     case "hard":
       gameProperties.extraTime = 6;
@@ -49,12 +58,15 @@ function setDifficulty() {
       gameProperties.gainedPoints = 200;
       gameProperties.lostPoints = -100;
       gameProperties.pointsForFinishing = 700;
+      maxTime = 20;
       setHardMode();
       break;
     default:
       throw new Error("Unknown difficulty");
   }
 }
+
+// hard mode works with different logic
 
 function setHardMode() {
   hardMode = true;
@@ -67,11 +79,10 @@ function setHardMode() {
   operation.textContent = `____ + ${numB} = ${numAB}`;
 }
 
+// general functions
+
 function generateRandomArray(n) {
-  let randomArray = [];
-  if (hardMode) {
-    randomArray = [numA];
-  }
+  const randomArray = hardMode ? [numA] : [];
   while (randomArray.length < n) {
     const randomNumber = Math.floor(Math.random() * 99) + 1;
 
@@ -92,6 +103,26 @@ function shuffleArray(array) {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+}
+
+function handleInteraction(input) {
+  const targetItem = input instanceof Event ? input.target : input;
+  const clickedNumber = parseInt(targetItem.textContent, 10);
+
+  if (hardMode) {
+    if (clickedNumber === numA) {
+      finishLevel();
+    } else {
+      wrongAnswer(targetItem);
+    }
+  } else if (clickedNumber === currentNumber) {
+    rightAnswer(targetItem);
+    if (numberOfSelectedItems === totalNumbers) {
+      finishLevel();
+    }
+  } else {
+    wrongAnswer(targetItem);
+  }
 }
 
 function handleItemClick(event) {
@@ -127,24 +158,9 @@ function wrongAnswer(target) {
   }, 300);
 }
 
-function handleInteraction(input) {
-  const targetItem = input instanceof Event ? input.target : input;
-  const clickedNumber = parseInt(targetItem.textContent, 10);
-
-  if (hardMode) {
-    if (clickedNumber === numA) {
-      finishLevel();
-    } else {
-      wrongAnswer(targetItem);
-    }
-  } else if (clickedNumber === currentNumber) {
-    rightAnswer(targetItem);
-    if (numberOfSelectedItems === totalNumbers) {
-      finishLevel();
-    }
-  } else {
-    wrongAnswer(targetItem);
-  }
+function toLeaderboard() {
+  sessionStorage.setItem('SCORE', score);
+  window.location.href = "leaderBoard.html";
 }
 
 function generateitems(numberOfItems) {
@@ -208,10 +224,56 @@ function handleKeyPress(event) {
   highlightSelected();
 }
 
+function updateScore(points) {
+  score += points;
+  document.getElementById("displayScore").innerHTML = ` ${score}`;
+}
+
+function startTimer() {
+  timeInSeconds = maxTime;
+  timer = setInterval(() => {
+    if (timeInSeconds > 0) {
+      timeInSeconds--;
+      updateTimer();
+    } else {
+      clearInterval(timer);
+      toLeaderboard();
+    }
+  }, 1000);
+}
+
+function updateTimer() {
+  const minutes = Math.floor(timeInSeconds / 60);
+  const seconds = timeInSeconds % 60;
+
+  const displayTime = `${String(minutes).padStart(2, "0")}:${String(
+    seconds,
+  ).padStart(2, "0")}`;
+  document.getElementById("timer").innerText = displayTime;
+
+  const progressBar = document.getElementById("progress-bar");
+
+  const percentage = (timeInSeconds / maxTime) * 100;
+  progressBar.style.width = `${percentage}%`;
+}
+
+function addTime(time) {
+  timeInSeconds = Math.min(timeInSeconds + time, maxTime);
+  updateTimer();
+}
+
+// First time loading window actions
+
 window.addEventListener("load", () => {
+  const user = sessionStorage.getItem("USER");
+  const endGameBtn = document.getElementById("btn-endGame");
   setDifficulty();
   repaintGameContainer();
   document.addEventListener("keydown", handleKeyPress);
   highlightSelected();
+  document.getElementById("displayName").innerHTML = ` ${user}`;
+  document.getElementById("displayScore").innerHTML = ` ${score}`;
+  endGameBtn.addEventListener("click", toLeaderboard);
+  startTimer();
   backgroundMusic.play();
 });
