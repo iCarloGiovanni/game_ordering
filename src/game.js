@@ -7,10 +7,10 @@ let selectedIndex = 0;
 let numberOfSelectedItems = 0;
 let itemsArray = [];
 // // variables for hard mode
-// let hardMode = false;
-// let numA = 0;
-// let numB = 0;
-// let numAB = 0;
+let hardMode = false;
+let numA = 0;
+let numB = 0;
+let numAB = 0;
 
 const selectedDifficulty = sessionStorage.getItem("DIFFICULTY");
 
@@ -22,9 +22,9 @@ const gameProperties = {
   pointsForFinishing: 0,
 };
 
-const backgroundMusic = document.getElementById('backgroundMusic');
-const correctSound = document.getElementById('correctSound');
-const wrongSound = document.getElementById('wrongSound');
+const backgroundMusic = document.getElementById("backgroundMusic");
+const correctSound = document.getElementById("correctSound");
+const wrongSound = document.getElementById("wrongSound");
 const audioContext = new AudioContext();
 
 function setDifficulty() {
@@ -49,24 +49,29 @@ function setDifficulty() {
       gameProperties.gainedPoints = 200;
       gameProperties.lostPoints = -100;
       gameProperties.pointsForFinishing = 700;
-      // setHardMode();
+      setHardMode();
       break;
     default:
       throw new Error("Unknown difficulty");
   }
 }
 
-// function setHardMode() {
-//   hardMode = true;
-//   const instructions = document.getElementById("instructions");
-//   const operation = document.getElementById("operation");
-//   instructions.textContent = 'Click the number that completes the following operation';
-//   operation.textContent = `____ + ${numB} = ${numAB}`;
-// }
+function setHardMode() {
+  hardMode = true;
+  const instructions = document.getElementById("instructions");
+  const operation = document.getElementById("operation");
+  instructions.textContent = "Click the number that completes the following operation";
+  numA = Math.floor(Math.random() * 50) + 1;
+  numB = Math.floor(Math.random() * 50) + 1;
+  numAB = numA + numB;
+  operation.textContent = `____ + ${numB} = ${numAB}`;
+}
 
 function generateRandomArray(n) {
-  const randomArray = [];
-
+  let randomArray = [];
+  if (hardMode) {
+    randomArray = [numA];
+  }
   while (randomArray.length < n) {
     const randomNumber = Math.floor(Math.random() * 99) + 1;
 
@@ -94,29 +99,51 @@ function handleItemClick(event) {
   audioContext.resume();
 }
 
+function finishLevel() {
+  updateScore(gameProperties.pointsForFinishing);
+  addTime(gameProperties.extraTime);
+  if (hardMode) {
+    correctSound.play();
+    setHardMode();
+  }
+  repaintGameContainer();
+}
+
+function rightAnswer(target) {
+  correctSound.play();
+  target.classList.add("completed");
+  numberOfSelectedItems++;
+  currentNumber = itemsArray[numberOfSelectedItems];
+  updateScore(gameProperties.gainedPoints);
+}
+
+function wrongAnswer(target) {
+  wrongSound.play();
+  target.classList.add("wrong");
+  updateScore(gameProperties.lostPoints);
+  addTime(gameProperties.subTime);
+  setTimeout(() => {
+    target.classList.remove("wrong");
+  }, 300);
+}
+
 function handleInteraction(input) {
   const targetItem = input instanceof Event ? input.target : input;
-
   const clickedNumber = parseInt(targetItem.textContent, 10);
-  if (clickedNumber === currentNumber) {
-    correctSound.play();
-    targetItem.classList.add("completed");
-    numberOfSelectedItems++;
-    currentNumber = itemsArray[numberOfSelectedItems];
-    updateScore(gameProperties.gainedPoints);
+
+  if (hardMode) {
+    if (clickedNumber === numA) {
+      finishLevel();
+    } else {
+      wrongAnswer(targetItem);
+    }
+  } else if (clickedNumber === currentNumber) {
+    rightAnswer(targetItem);
     if (numberOfSelectedItems === totalNumbers) {
-      updateScore(gameProperties.pointsForFinishing);
-      addTime(gameProperties.extraTime);
-      repaintGameContainer();
+      finishLevel();
     }
   } else {
-    wrongSound.play();
-    targetItem.classList.add("wrong");
-    updateScore(gameProperties.lostPoints);
-    addTime(gameProperties.subTime);
-    setTimeout(() => {
-      targetItem.classList.remove("wrong");
-    }, 300);
+    wrongAnswer(targetItem);
   }
 }
 
@@ -128,9 +155,11 @@ function generateitems(numberOfItems) {
       itemsArray = Array.from(Array(numberOfItems).keys()).map((i) => i + 1);
       break;
     case "medium":
+    case "hard":
       itemsArray = generateRandomArray(numberOfItems);
       break;
-    default: break;
+    default:
+      break;
   }
   const definitiveArray = shuffleArray(itemsArray);
 
